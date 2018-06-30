@@ -1,0 +1,57 @@
+<button (click)="loadAllComments()">Show All Comments</button>
+<button (click)="shownCommentForm()">Create Comment</button>
+<button (click)="getCommentByIdView()">Search Comment By Id</button>
+
+<div [ngSwitch]="task">
+    <ng-template [ngSwitchCase]="'all'">
+        <ul>
+            <li *ngFor="let comment of comments$ | async">
+                {{comment.id}} - {{comment.name}} - {{comment.email}}
+                <br> {{comment.body}}
+            </li>
+        </ul>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]="'create'">
+        <p>
+            <b>{{ message$ | async }}</b>
+        </p>
+        <form [formGroup]="commentForm" (ngSubmit)="onFormSubmit()">
+            <p> Enter New Id:
+                <input formControlName="id">
+                <label *ngIf="id.errors?.required && !commentForm.pristine" style="color:red">
+                    Enter comment id
+                </label>
+            </p>
+            <p> Enter Name:
+                <input formControlName="name"> </p>
+            <p> Enter Description:
+                <input formControlName="body"> </p>
+            <p>
+                <button> Submit </button>
+            </p>
+        </form>
+        <ul>
+            <li *ngFor="let comment of comments$ | async">
+                {{comment.id}} - {{comment.name}} - {{comment.email}}
+                <br> {{comment.body}}
+            </li>
+        </ul>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]="'get'">
+        <p> Enter Id:
+            <input [(ngModel)]="commentId" (input)="searchCommentById(commentId)"> </p>
+        <p *ngIf="commentId">Pending &hellip;</p>
+        <ul>
+            <li *ngFor="let comment of comments$ | async">
+                {{comment.id}} - {{comment.name}} - {{comment.email}}
+                <br> {{comment.body}}
+            </li>
+        </ul>
+    </ng-template>
+    <ng-template ngSwitchDefault>
+        <br/>
+        <b>Select Task</b>
+    </ng-template>
+</div>

@@ -4,7 +4,7 @@ import {
   ArticleActionTypes
 } from '../actions/article.actions';
 import { React_ARTICLES, ANGULAR_ARTICLES } from '../models/article';
-import { ArticleState } from '../../reducers/app.states';
+import { ArticleState } from '../../states/app.states';
 
 export const initialState: ArticleState = { articles: [] };
 

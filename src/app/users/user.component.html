@@ -1,0 +1,103 @@
+<button (click)="loadAllUsers()">Show All Users</button>
+<button (click)="addUserView()">Add User</button>
+<button (click)="updateUserView()">Update User</button>
+<button (click)="removeUserView()">Remove User</button>
+<button (click)="userByIdView()">Select User By Id</button>
+<hr/>
+<div [ngSwitch]="task">
+    <ng-template ngSwitchCase="all">
+        <b>Total Count: {{count$ | async}}</b>
+        <br/>
+        <br/>
+        <b>Ids:</b> {{userIds$ | async}}
+        <br/>
+        <br/>
+        <b>Details:</b>
+        <ul>
+            <li *ngFor="let user of allUsers$ | async">
+                {{user.id}} - {{user.name}} - {{user.email}}
+            </li>
+        </ul>
+    </ng-template>
+
+    <ng-template ngSwitchCase="add">
+        <form [formGroup]="userForm" (ngSubmit)="onFormSubmitForAdd()">
+            <div formArrayName="usersArray">
+                <div *ngFor="let userControl of usersFormArray.controls; let idx = index" [formGroupName]="idx">
+                    <p>
+                        <b>New User: {{idx + 1}}</b>
+                    </p>
+                    <p> Id:
+                        <input formControlName="id">
+                    </p>
+                    <p> Name:
+                        <input formControlName="name"> </p>
+                    <p> Email:
+                        <input formControlName="email"> </p>
+                    <p>
+                        <button type="button" (click)="deleteFormArrayControl(idx)">Delete</button>
+                    </p>
+                </div>
+            </div>
+            <button type="button" (click)="addMoreControlForAdd()">Add More User</button>
+            <hr/>
+            <p *ngIf="usersFormArray.length > 0">
+                <button> Submit </button>
+            </p>
+        </form>
+    </ng-template>
+
+    <ng-template ngSwitchCase="update">
+        <form [formGroup]="userForm" (ngSubmit)="onFormSubmitForUpdate()">
+            <div formArrayName="usersArray">
+                <div *ngFor="let userControl of usersFormArray.controls; let idx = index" [formGroupName]="idx">
+                    <p> Id:
+                        <input formControlName="id" readonly>
+                    </p>
+                    <p> Update Name:
+                        <input formControlName="name"> </p>
+                    <p> Update Email:
+                        <input formControlName="email"> </p>
+                    <p>
+                        <button type="button" (click)="deleteFormArrayControl(idx)">Delete</button>
+                    </p>
+                </div>
+            </div>
+            <button type="button" (click)="addMoreControlForUpdate()">Update More User</button>
+            <hr/>
+            <p *ngIf="usersFormArray.length > 0">
+                <button> Update </button>
+            </p>
+        </form>
+    </ng-template>
+
+    <ng-template ngSwitchCase="remove">
+        <form [formGroup]="userForm" (ngSubmit)="onFormSubmitForRemove()">
+            <div formArrayName="usersArray">
+                <ul>
+                    <li *ngFor="let userControl of usersFormArray.controls; let idx = index" [formGroupName]="idx">
+                        <input type="checkbox" formControlName="chk" /> {{userControl.get('userData').value.id}} | {{userControl.get('userData').value.name}} | {{userControl.get('userData').value.email}}
+                        <input type="hidden" formControlName="userData">
+                    </li>
+                </ul>
+            </div>
+            <hr/>
+            <p *ngIf="usersFormArray.length > 0">
+                <button>Remove Selected</button>
+                <button type="button" (click)="clearAllUsers()">Clear All</button>
+            </p>
+        </form>
+    </ng-template>
+
+    <ng-template ngSwitchCase="select">
+        <p> Enter Id:
+            <input [(ngModel)]="userId">
+            <button type="button" (click)="selectUserById()">Show User</button>
+        </p>
+        <ul>
+            <li *ngIf="userById$ | async as user">
+                {{user.id}} - {{user.name}} - {{user.email}}
+            </li>
+        </ul>
+    </ng-template>
+</div>
